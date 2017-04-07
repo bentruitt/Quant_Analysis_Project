@@ -6,13 +6,13 @@ Apply machine learning including neural networks through financial quantitative 
 
 ## Deciding on Index  
 
-<img align="right" src="/plots/index_comp_plot.png" alt="NASDAQ Plot" width=51% hspace=1% vspace=2%>   
+<img style="float:right" src="/plots/index_comp_plot.png" alt="NASDAQ Plot" width=51% hspace=1% vspace=2%>   
 
-<img align="right" src="/plots/dow_plot.png" alt="Dow Plot" width=51% hspace=1% vspace=2%>  
+<img style="float:right" src="/plots/dow_plot.png" alt="Dow Plot" width=51% hspace=1% vspace=2%>  
 
-<img align="right" src="/plots/snp_plot.png" alt="S&P Plot" width=51% hspace=1% vspace=2%>  
+<img style="float:right" src="/plots/snp_plot.png" alt="S&P Plot" width=51% hspace=1% vspace=2%>  
 
-<img align="right" src="/plots/nasdaq_plot.png" alt="NASDAQ Plot" width=51% hspace=1% vspace=2%>
+<img style="float:right" src="/plots/nasdaq_plot.png" alt="NASDAQ Plot" width=51% hspace=1% vspace=2%>
 
 Normalizing data based on first trading day of dataset. The plots are all very similar.
 
@@ -39,5 +39,6 @@ The S&P 500 covers the below sectors allowing better cross sector diversificatio
 | Real Estate	| 2.89%	|  
 
 *** http://siblisresearch.com/data/sp-500-sector-weightings/
+
 
 Based on this initial analysis of three common indexes, the S&P 500 will be used as the benchmark and a portfolio will be constructed from a subset of the companies within the S&P 500.
