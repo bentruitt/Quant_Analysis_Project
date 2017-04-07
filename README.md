@@ -6,11 +6,11 @@ Apply machine learning including neural networks through financial quantitative 
 
 ## Deciding on Index  
 
-<img align="right" src="/plots/dow_plot.jpg" alt="Dow Plot" width=40%>
+<img align="right" src="/plots/dow_plot.png" alt="Dow Plot" width=40%>  
 
-<img align="right" src="/plots/snp_plot.jpg" alt="S&P Plot" width=40%>
+<img align="right" src="/plots/snp_plot.png" alt="S&P Plot" width=40%>  
 
-<img align="right" src="/plots/nasdaq_plot.jpg" alt="NASDAQ Plot" width=40%>
+<img align="right" src="/plots/nasdaq_plot.png" alt="NASDAQ Plot" width=40%>  
 
 Normalizing data based on first trading day of 2000. The plots are all very similar.
 
