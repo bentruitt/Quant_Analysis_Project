@@ -41,9 +41,6 @@ adj_close = adj_close.reindex(all_weekdays)
 
 # Replace nan values with latest available price for each instrument. Nans are inserted for any days the market is not open; such as, holidays.
 adj_close = adj_close.fillna(method='ffill')
-# Normalize data
-for column in adj_close.columns:
-    adj_close[column] = adj_close[column]/adj_close[column].ix[adj_close.index.min()]
 # print adj_close.head(), "\n"
 # print adj_close.describe()
 '''              ^DJI        ^GSPC        ^IXIC
@@ -76,7 +73,7 @@ long_window = 100
 for key in data_series.keys():
     data_series[key]['short'] = data_series[key]['idx'].rolling(window=short_window).mean()
     data_series[key]['long'] = data_series[key]['idx'].rolling(window=long_window).mean()
-
+    data_series[key]['indexed'] = data_series[key]['idx']/data_series[key]['idx'].ix[data_series[key]['idx'].index.min()]
 # plot each instrument with rolling averages
 plot_dir = '../plots/'
 for key in data_series.keys():
@@ -90,3 +87,17 @@ for key in data_series.keys():
     ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
                ncol=3, mode="expand", borderaxespad=0.)
     plt.savefig(plot_dir + key + '_plot.png')
+    plt.close()
+
+# plot normalized index for comparison
+# Normalize data
+fig = plt.figure()
+ax = fig.add_subplot(111)
+for key in data_series.keys():
+    ax.plot(data_series[key]['indexed'].index, data_series[key]['indexed'], label=key)
+ax.set_xlabel('Date')
+ax.set_ylabel('Indexed closing price')
+ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=3, mode="expand", borderaxespad=0.)
+plt.savefig(plot_dir + 'index_comp_plot.png')
+plt.close()
