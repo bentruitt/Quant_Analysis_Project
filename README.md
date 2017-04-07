@@ -36,7 +36,8 @@ The S&P 500 covers the below sectors allowing better cross sector diversificatio
 | Materials	| 2.84%	|
 | Telecoms	| 2.66%	|
 | Utilities	| 3.17%	|
-| Real Estate	| 2.89%	|
+| Real Estate	| 2.89%	|  
+
 *** http://siblisresearch.com/data/sp-500-sector-weightings/
 
 Based on this initial analysis of three common indexes, the S&P 500 will be used as the benchmark and a portfolio will be constructed from a subset of the companies within the S&P 500.
