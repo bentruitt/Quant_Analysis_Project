@@ -4,6 +4,7 @@ from pandas_datareader import data # pip install pandas_datareader
 import matplotlib.pyplot as plt
 import pandas as pd
 import datetime as dt
+import numpy as np
 
 # Define the instruments to download. Initially; S&P 500, Dow, and Nasdaq
 tickers = ['^GSPC', '^DJI', '^IXIC']
@@ -100,4 +101,23 @@ ax.set_ylabel('Indexed closing price')
 ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
            ncol=3, mode="expand", borderaxespad=0.)
 plt.savefig(plot_dir + 'index_comp_plot.png')
+plt.close()
+
+# plot S&P sector makekeup
+dc_sec = {'12/31/2016': {'Consum. Disc.': 0.1203,
+  'Consum. Stap.': 0.0937,
+  'Energy': 0.0756, 'Financials': .1481, 'Health Care': .1363, 'Industrials': .1027, 'IT': .2077, 'Materials': .0284, 'Telecoms': .0266, 'Utilities': .0317, 'Real Estate': .0289}}
+df_sec = pd.DataFrame(dc_sec)
+srt_idx = np.argsort(df_sec.iloc[:,0])
+srted_labels = df_sec.iloc[:,0][srt_idx][::-1].index
+srted_values = df_sec.iloc[:,0][srt_idx][::-1].values
+n_bars = len(srted_labels)
+plt.figure()
+plt.title("Weighting of sectors in S&P 500")
+plt.bar(range(n_bars), srted_values, color="g", align="center")
+plt.xticks(range(n_bars), srted_labels, rotation=75)
+plt.ylabel("Sector Weighting")
+plt.xlim([-1, n_bars])
+plt.tight_layout()
+plt.savefig(plot_dir + "snp_sector_weighting.png")
 plt.close()

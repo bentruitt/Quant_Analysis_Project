@@ -8,11 +8,7 @@ Apply machine learning including neural networks through financial quantitative 
 
 <img style="float:right" src="/plots/index_comp_plot.png" alt="NASDAQ Plot" width=51% hspace=1% vspace=2%>   
 
-<img style="float:right" src="/plots/dow_plot.png" alt="Dow Plot" width=51% hspace=1% vspace=2%>  
-
 <img style="float:right" src="/plots/snp_plot.png" alt="S&P Plot" width=51% hspace=1% vspace=2%>  
-
-<img style="float:right" src="/plots/nasdaq_plot.png" alt="NASDAQ Plot" width=51% hspace=1% vspace=2%>
 
 Normalizing data based on first trading day of dataset. The plots are all very similar.
 
@@ -24,21 +20,9 @@ The S&P 500 is made up of 500 companies, which is a manageable number of compani
 
 The S&P 500 covers the below sectors allowing better cross sector diversification.
 
-| Sector |	12/31/2016 |
-|:---|:---:|
-| Consum. Disc.	| 12.03% |
-| Consum. Stap.	| 9.37% |
-| Energy	| 7.56%	|
-| Financials	| 14.81%	|
-| Health Care	| 13.63%	|
-| Industrials	| 10.27%	|
-| IT	| 20.77%	|
-| Materials	| 2.84%	|
-| Telecoms	| 2.66%	|
-| Utilities	| 3.17%	|
-| Real Estate	| 2.89%	|  
+<img style="float:center" src="/plots/snp_sector_weighting.png" alt="S&P 500 Sector Weighting" width=90% hspace=1% vspace=2%>   
 
-*** http://siblisresearch.com/data/sp-500-sector-weightings/
+* http://siblisresearch.com/data/sp-500-sector-weightings/
 
 
 Based on this initial analysis of three common indexes, the S&P 500 will be used as the benchmark and a portfolio will be constructed from a subset of the companies within the S&P 500.
