@@ -8,7 +8,7 @@ Apply machine learning including neural networks through financial quantitative 
 
 <img style="float:right" src="/plots/index_comp_plot.png" alt="NASDAQ Plot" width=51% hspace=1% vspace=2%>   
 
-<img style="float:right" src="/plots/snp_plot.png" alt="S&P Plot" width=51% hspace=1% vspace=2%>  
+<img style="float:right" src="/plots/^GSPC_plot.png" alt="S&P Plot" width=51% hspace=1% vspace=2%>  
 
 Normalizing data based on first trading day of dataset. The plots are all very similar.
 
@@ -20,7 +20,7 @@ The S&P 500 is made up of 500 companies, which is a manageable number of compani
 
 The S&P 500 covers the below sectors allowing better cross sector diversification.
 
-<img style="float:center" src="/plots/snp_sector_weighting.png" alt="S&P 500 Sector Weighting" width=90% hspace=1% vspace=2%>   
+<img style="float:center" src="/plots/snp_sector_weighting.png" alt="S&P 500 Sector Weighting" width=90% hspace=1% vspace=2%>  
 
 * http://siblisresearch.com/data/sp-500-sector-weightings/
 
