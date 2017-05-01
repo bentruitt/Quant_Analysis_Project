@@ -6,9 +6,9 @@ Apply machine learning including neural networks through financial quantitative 
 
 ## Deciding on Index  
 
-<img style="float:right" src="/plots/saved_plots/indexed_instruments_plot.png" alt="NASDAQ Plot" width=51% hspace=1% vspace=2%>   
+<img align="right" src="/plots/saved_plots/indexed_instruments_plot.png" alt="Normalized Indexes" width=51% hspace=1% vspace=2%>   
 
-<img style="float:right" src="/plots/saved_plots/^GSPC_None_plot.png" alt="S&P Plot" width=51% hspace=1% vspace=2%>  
+<img align="right" src="/plots/saved_plots/^GSPC_None_plot.png" alt="S&P Plot w Averages" width=51% hspace=1% vspace=2%>  
 
 Normalizing data based on first trading day of dataset. The plots are all very similar.
 
@@ -20,7 +20,7 @@ The S&P 500 is made up of 500 companies, which is a manageable number of compani
 
 The S&P 500 covers the below sectors allowing better cross sector diversification.
 
-<img style="float:center" src="/plots/saved_plots/snp_sector_weighting.png" alt="S&P 500 Sector Weighting" width=90% hspace=1% vspace=2%>  
+<img align="center" src="/plots/saved_plots/snp_sector_weighting.png" alt="S&P 500 Sector Weighting" width=90% hspace=1% vspace=2%>  
 
 * http://siblisresearch.com/data/sp-500-sector-weightings/
 
@@ -38,11 +38,11 @@ As a first step in developing a trading algorithm, the application of a technica
 
 This is not my position, but I do feel it is important to acknowledge technical trading techniques (with a grain of salt).
 
-<img style="float:right" src="/plots/saved_plots/^GSPC_None_plot.png" alt="S&P Plot" width=70% hspace=1% vspace=2%>  
+<img align="right" src="/plots/saved_plots/^GSPC_None_plot.png" alt="S&P Plot w Averages" width=70% hspace=1% vspace=2%>  
 
 In the plot of the S&P 500 index to the right, you can see plots of both a 20 day rolling average ("short avg") and 100 day rolling average ("long avg"). From looking at the plot, you can see that if you were to execute long/short trades anytime the short-term rolling average and the price of the S&P 500 move from below/above the long-term rolling average to above/below, you might be able to generate profit.
 
-<img style="float:left" src="/plots/saved_plots/^GSPC_20_100_plot.png" alt="S&P Plot" width=70% hspace=1% vspace=2%>
+<img align="left" src="/plots/saved_plots/^GSPC_20_100_plot.png" alt="S&P Plot w 20/100" width=70% hspace=1% vspace=2%>
 
 Let's try it! In the plot below, the green line represents the value of an investment that was made on the first trading day of 2000 in the same amount as the value of the S&P at the time. It does show some potential, but what happened in the periods 2010 through mid-2012 and early-2014 through early-2016? Well, maybe that proves technical trading strategies just don't work? Or, maybe the arbitrary use of 20 day and 100 day rolling averages doesn't work?
 
@@ -50,7 +50,7 @@ The use of 20 day and 100 day averages kind of makes sense. The 20 day average h
 
 I have run the analysis and now have to decide whether, or not, to post this publicly. I may have just come up with a $1,000,000 strategy!!!
 
-<img style="float:right" src="/plots/saved_plots/^IXIC_115_120_norm_plot.png" alt="S&P Plot" width=70% hspace=1% vspace=2%>
+<img align="right" src="/plots/saved_plots/^IXIC_115_120_norm_plot.png" alt="S&P Plot w 115/120" width=70% hspace=1% vspace=2%>
 
 The chart to the right represents an annual return of 9.09%. Or a 339% return since January 1st, 2000 --- $1.00 becomes $4.39. Not bad, but is this a million dollar idea? My guess is "no". It took me not much time to find rolling averages that would perform like this. I can't imagine others have not done the same.
 
