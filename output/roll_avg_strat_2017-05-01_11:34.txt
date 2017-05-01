@@ -1,0 +1,30 @@
+The data for this analysis was pulled from: yahoo
+This analysis was run on the the tickers: ['^GSPC', '^DJI', '^IXIC']
+This analysis was run over the time range: 2000-01-01 to 2017-05-01
+
+^DJI
+Short_Long Ending_Value 
+190_285    2.709144
+205_300    2.643517
+175_360    2.558564
+145_330    2.557983
+160_315    2.551725
+Name: 2017-05-01 00:00:00, dtype: float64
+
+^GSPC
+Short_Long Ending_Value 
+115_120    3.906366
+115_135    3.542507
+205_225    3.534417
+100_150    3.211111
+190_255    3.143158
+Name: 2017-05-01 00:00:00, dtype: float64
+
+^IXIC
+Short_Long Ending_Value 
+115_120    4.389393
+130_210    3.673984
+220_225    3.579921
+205_360    3.526173
+115_210    3.517221
+Name: 2017-05-01 00:00:00, dtype: float64

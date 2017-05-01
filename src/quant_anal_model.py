@@ -39,19 +39,20 @@ def plot_normalized(data_panel, plot_dir, strat_name = '20_100'):
         plt.savefig(plot_dir + item + '_' + strat_name + '_norm_plot.png')
         plt.close()
 
-def plot_with_averages(data_panel, plot_dir, strat_name = '20_100'):
+def plot_with_averages(data_panel, plot_dir, strat_name = None):
     # create separate plot for each intrument with rolling averages
     sa_name = 'sa_' + str(short_window) + '_' + str(long_window)
     la_name = 'la_' + str(short_window) + '_' + str(long_window)
     for item in data_panel.items:
         fig = plt.figure()
-        plt.title ("Instrument to " + strat_name + " Comparison")
+        plt.title ("Instrument to " + str(strat_name) + " Comparison")
         ax = fig.add_subplot(1,1,1)
         ax.plot(data_panel[item].index, data_panel[item]['inst_price'], label=item)
-        init_inst_price = data_panel[item]['inst_price'][data_panel[item].index.min()]
-        ax.plot(data_panel[item].index, \
-            init_inst_price * data_panel[item][strat_name], \
-            label=strat_name)
+        if strat_name != None:
+            init_inst_price = data_panel[item]['inst_price'][data_panel[item].index.min()]
+            ax.plot(data_panel[item].index, \
+                init_inst_price * data_panel[item][strat_name], \
+                label=str(strat_name))
         ax.plot(data_panel[item].index, data_panel[item][sa_name], label='short avg')
         ax.plot(data_panel[item].index, data_panel[item][la_name], label='long avg')
         ax.set_xlabel('Date')
@@ -59,7 +60,7 @@ def plot_with_averages(data_panel, plot_dir, strat_name = '20_100'):
         ax.legend(bbox_to_anchor=(0., .99, 1., 1.02),loc=3, \
             ncol=4, mode="expand", borderaxespad=0.)
         plt.xticks(rotation=15)
-        plt.savefig(plot_dir + item + '_' + strat_name + '_plot.png')
+        plt.savefig(plot_dir + item + '_' + str(strat_name) + '_plot.png')
         plt.close()
 
 def create_data_panel(all_panel_data, start_date, end_date, use_price='Adj Close'):
@@ -151,6 +152,7 @@ if __name__ == '__main__':
     # Define file locations
     plot_dir = '../plots/'
     data_dir = '../data/'
+    output_dir = '../output/'
 
     # Define the instruments to download. Initially; S&P 500, Dow, and Nasdaq
     tickers = ['^GSPC', '^DJI', '^IXIC']
@@ -163,11 +165,11 @@ if __name__ == '__main__':
     end_date = dt.date.today().strftime("%Y-%m-%d")
 
     # Create text file for output
-    start_time = str(datetime.now().strftime('%Y-%m-%d_%H:%M'))
-    print_file = open("output/" + "roll_avg_strat_" + start_time + ".txt", "w")
+    start_time = str(dt.datetime.now().strftime('%Y-%m-%d_%H:%M'))
+    print_file = open(output_dir + "roll_avg_strat_" + start_time + ".txt", "w")
     print_file.write("The data for this analysis was pulled from: %s\n" % (data_source))
     print_file.write("This analysis was run on the the tickers: %s\n" % (tickers))
-    print_file.write("This analysis was run over the time range: %s to %s" % (start_date, end_date))
+    print_file.write("This analysis was run over the time range: %s to %s\n" % (start_date, end_date))
 
     # Use pandas_datareader.data.DataReader to load the desired data.
     all_data_panel = data.DataReader(tickers, data_source, start_date, end_date)
@@ -207,13 +209,17 @@ if __name__ == '__main__':
     data_panel['^GSPC'].to_csv(data_dir + 'S&P_trade_data.csv')
     data_panel.to_pickle(data_dir + 'data_panel.pkl')
 
+    # print top n and plot top m trading strategies
+    n_print = 5
+    m_plot = 5
     for item in data_panel.items:
-        srt_idx = np.argsort(data_panel[item].iloc[-1,:][strat_list])
-        print_file.write(item, '\n', data_panel[item].iloc[-1,:][strat_list][srt_idx][::-1][:5], '\n')
-        for strat in data_panel[item].iloc[-1,4:][srt_idx][::-1][:5].index.tolist():
+        srt_idx = np.argsort(data_panel[item][strat_list].iloc[-1,:])
+        print_file.write("\n%s\n%s%s\n%s\n" % (item, '{:11}'.format('Short_Long'), '{:13}'.format('Ending_Value'), data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:n_print]))
+        for strat in data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:m_plot].index.tolist():
             plot_normalized(data_panel, plot_dir, strat)
 
     # plot each instrument with rolling averages
+    plot_with_averages(data_panel, plot_dir)
     plot_with_averages(data_panel, plot_dir, strat_name = '20_100')
 
     # plot normalized instrument data
@@ -240,3 +246,5 @@ if __name__ == '__main__':
     #
     # sector_date = '12/31/2016'
     # plot_sector_weighting(dict_sec, sector_date, plot_dir)
+
+    print_file.close()
