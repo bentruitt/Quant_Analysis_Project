@@ -23,37 +23,46 @@ def plot_sector_weighting(dc_sec, key, plot_dir):
     plt.savefig(plot_dir + "snp_sector_weighting.png")
     plt.close()
 
-def plot_normalized(data_panel, plot_dir):
+def plot_normalized(data_panel, plot_dir, strat_name = '20_100'):
     # plot normalized price for comparison
     # Normalize data
     for item in data_panel.items:
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.plot(data_panel[item]['indexed'].index, data_panel[item]['indexed'], label=item+'-indexed')
-        ax.plot(data_panel[item]['inv_value'].index, data_panel[item]['inv_value'], label=item+'-str_inv_value')
+        ax.plot(data_panel[item].index, data_panel[item]['indexed'], label=item+'-indexed')
+        ax.plot(data_panel[item].index, data_panel[item][strat_name], label=item+'-' + strat_name + '_strat')
         ax.set_xlabel('Date')
         ax.set_ylabel('Indexed Value')
         ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
                    ncol=3, mode="expand", borderaxespad=0.)
-        plt.savefig(plot_dir + item + '_index_strat_plot.png')
+        plt.xticks(rotation=15)
+        plt.savefig(plot_dir + item + '_' + strat_name + '_norm_plot.png')
         plt.close()
 
-def plot_with_averages(data_panel, plot_dir):
+def plot_with_averages(data_panel, plot_dir, strat_name = '20_100'):
     # create separate plot for each intrument with rolling averages
+    sa_name = 'sa_' + str(short_window) + '_' + str(long_window)
+    la_name = 'la_' + str(short_window) + '_' + str(long_window)
     for item in data_panel.items:
         fig = plt.figure()
+        plt.title ("Instrument to " + strat_name + " Comparison")
         ax = fig.add_subplot(1,1,1)
-        ax.plot(data_panel[item]['inst_price'].index, data_panel[item]['inst_price'], label=item)
-        ax.plot(data_panel[item]['short_avg'].index, data_panel[item]['short_avg'], label='20 days rolling')
-        ax.plot(data_panel[item]['long_avg'].index, data_panel[item]['long_avg'], label='100 days rolling')
+        ax.plot(data_panel[item].index, data_panel[item]['inst_price'], label=item)
+        init_inst_price = data_panel[item]['inst_price'][data_panel[item].index.min()]
+        ax.plot(data_panel[item].index, \
+            init_inst_price * data_panel[item][strat_name], \
+            label=strat_name)
+        ax.plot(data_panel[item].index, data_panel[item][sa_name], label='short avg')
+        ax.plot(data_panel[item].index, data_panel[item][la_name], label='long avg')
         ax.set_xlabel('Date')
         ax.set_ylabel('Adjusted closing price ($)')
-        ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
-                   ncol=3, mode="expand", borderaxespad=0.)
-        plt.savefig(plot_dir + item + '_plot.png')
+        ax.legend(bbox_to_anchor=(0., .99, 1., 1.02),loc=3, \
+            ncol=4, mode="expand", borderaxespad=0.)
+        plt.xticks(rotation=15)
+        plt.savefig(plot_dir + item + '_' + strat_name + '_plot.png')
         plt.close()
 
-def create_data_panel(all_panel_data, use_price='Adj Close'):
+def create_data_panel(all_panel_data, start_date, end_date, use_price='Adj Close'):
     # Create dictionary with only time series of data and indexed series.
     # The index is the major axis of the DataFrame
 
@@ -68,6 +77,7 @@ def create_data_panel(all_panel_data, use_price='Adj Close'):
 
     # Replace nan values with latest available price for each instrument. Nans are inserted for any days the market is not open; such as, holidays.
     df_price = df_price.fillna(method='ffill')
+    df_price = df_price.fillna(method='bfill')
     # print df_price.head(), "\n"
     # print df_price.describe()
     '''              ^DJI        ^GSPC        ^IXIC
@@ -96,6 +106,46 @@ def create_data_panel(all_panel_data, use_price='Adj Close'):
 
     return pd.Panel.from_dict(data_series)
 
+def add_performance_column(data_panel, short_window, long_window, allow_short):
+    sa_name = 'sa_' + str(short_window) + '_' + str(long_window)
+    la_name = 'la_' + str(short_window) + '_' + str(long_window)
+    for item in data_panel.items:
+        data_panel[item][sa_name] =  data_panel[item]['inst_price'].rolling(window=short_window).mean()
+        data_panel[item][la_name] = data_panel[item]['inst_price'].rolling(window=long_window).mean()
+        # Implement trade strategy of buying anytime instrument price and short rolling average are above long average. Specify long and short positions
+        buy = False
+        sell = False
+        long_pos = []
+        short_pos = []
+        for i, idx in enumerate(data_panel[item].index):
+            if (data_panel[item]['inst_price'][idx] > \
+                data_panel[item][la_name][idx]) and \
+                (data_panel[item][sa_name][idx] > \
+                data_panel[item][la_name][idx]):
+                buy = True
+                sell = False
+            elif (data_panel[item]['inst_price'][idx] < \
+                data_panel[item][la_name][idx]) and \
+                (data_panel[item][sa_name][idx] < \
+                data_panel[item][la_name][idx]):
+                buy = False
+                sell = True
+            long_pos.append(buy)
+            short_pos.append(sell)
+        long_pos_arr = np.array(long_pos)
+        short_pos_arr = np.array(short_pos)
+        long_pct_gain_arr = \
+            data_panel[item]['indexed'].pct_change().fillna(0) * np.insert(long_pos_arr, 0,False)[:-1]
+        short_pct_gain_arr = \
+            data_panel[item]['indexed'].pct_change().fillna(0) * np.insert(short_pos_arr, 0,False)[:-1] * -1.0
+        total_pct_gain_arr = long_pct_gain_arr
+        if allow_short:
+            total_pct_gain_arr += short_pct_gain_arr
+        data_panel[item][str(short_window) + '_' + str(long_window)] = \
+            (total_pct_gain_arr + 1.0).cumprod()
+
+    return data_panel
+
 if __name__ == '__main__':
 
     # Define file locations
@@ -111,6 +161,13 @@ if __name__ == '__main__':
     # Select dates for desired data
     start_date = '2000-01-01'
     end_date = dt.date.today().strftime("%Y-%m-%d")
+
+    # Create text file for output
+    start_time = str(datetime.now().strftime('%Y-%m-%d_%H:%M'))
+    print_file = open("output/" + "roll_avg_strat_" + start_time + ".txt", "w")
+    print_file.write("The data for this analysis was pulled from: %s\n" % (data_source))
+    print_file.write("This analysis was run on the the tickers: %s\n" % (tickers))
+    print_file.write("This analysis was run over the time range: %s to %s" % (start_date, end_date))
 
     # Use pandas_datareader.data.DataReader to load the desired data.
     all_data_panel = data.DataReader(tickers, data_source, start_date, end_date)
@@ -128,44 +185,55 @@ if __name__ == '__main__':
 
     # Create panel with only time series of data and indexed series.
     # The index is the major axis of the DataFrame
-    data_panel = create_data_panel(all_data_panel, use_price='Adj Close')
+    data_panel = create_data_panel(all_data_panel, start_date, end_date, use_price='Adj Close')
 
     # Calculate the short(20) and long(100) day moving averages of the prices
     short_window = 20
     long_window = 100
-    long_only = True
+    allow_short = True
 
-    for item in data_panel.items:
-        data_panel[item]['short_avg'] =  data_panel[item]['inst_price'].rolling(window=short_window).mean()
-        data_panel[item]['long_avg'] = data_panel[item]['inst_price'].rolling(window=long_window).mean()
-        # Implement trade strategy of buying anytime instrument price and short rolling average are above long average. Specify long and short positions
-        data_panel[item]['long_pos'] = \
-            (data_panel[item]['inst_price'] > data_panel[item]['long_avg']) & \
-            (data_panel[item]['short_avg'] > data_panel[item]['long_avg'])
-        data_panel[item]['short_pos'] = \
-            (data_panel[item]['inst_price'] < data_panel[item]['long_avg']) & \
-            (data_panel[item]['short_avg'] < data_panel[item]['long_avg'])
-        data_panel[item]['long_pct_gain'] = \
-            data_panel[item]['indexed'].pct_change().fillna(0) * data_panel[item]['long_pos'].shift(1).fillna(False)
-        data_panel[item]['short_pct_gain'] = \
-            data_panel[item]['indexed'].pct_change().fillna(0) * data_panel[item]['short_pos'].shift(1).fillna(False) * -1.0
-        data_panel[item]['total_pct_gain'] = data_panel[item]['long_pct_gain']
-        if not long_only:
-            data_panel[item]['total_pct_gain'] += data_panel[item]['short_pct_gain']
-        data_panel[item]['inv_value'] = \
-            (data_panel[item]['total_pct_gain'] + 1.0).cumprod()
+    # add performance column to data frame for 20/100 strategy
+    data_panel = add_performance_column(data_panel, short_window, long_window, allow_short)
+
+    # add performance columns for short/long strategy across ranges
+    strat_list = []
+    for l_range in range(30, 390, 15):
+        for s_range in range(10, l_range, 15):
+            strat_list.append(str(s_range) + '_' + str(l_range))
+            data_panel = add_performance_column(data_panel, s_range, l_range, True)
 
     investment_value = 1.00
 
     data_panel['^GSPC'].to_csv(data_dir + 'S&P_trade_data.csv')
+    data_panel.to_pickle(data_dir + 'data_panel.pkl')
 
-    # # plot each instrument with rolling averages
-    # plot_with_averages(data_series, plot_dir):
-    #
+    for item in data_panel.items:
+        srt_idx = np.argsort(data_panel[item].iloc[-1,:][strat_list])
+        print_file.write(item, '\n', data_panel[item].iloc[-1,:][strat_list][srt_idx][::-1][:5], '\n')
+        for strat in data_panel[item].iloc[-1,4:][srt_idx][::-1][:5].index.tolist():
+            plot_normalized(data_panel, plot_dir, strat)
+
+    # plot each instrument with rolling averages
+    plot_with_averages(data_panel, plot_dir, strat_name = '20_100')
+
     # plot normalized instrument data
-    plot_normalized(data_panel, plot_dir)
+    plot_normalized(data_panel, plot_dir, strat_name = '20_100')
 
-    # # plot S&P sector makekeup
+
+    # # plot indexed instruments on same plot
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111)
+    # for item in data_panel.items:
+    #     ax.plot(data_panel[item].index, data_panel[item]['indexed'], label=item+'-indexed')
+    # ax.set_xlabel('Date')
+    # ax.set_ylabel('Indexed Value')
+    # ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+    #            ncol=3, mode="expand", borderaxespad=0.)
+    # plt.xticks(rotation=15)
+    # plt.savefig(plot_dir + 'indexed_instruments_plot.png')
+    # plt.close()
+
+    # # # plot S&P sector makekeup
     # dict_sec = {'12/31/2016': {'Consum. Disc.': 0.1203,
     #   'Consum. Stap.': 0.0937,
     #   'Energy': 0.0756, 'Financials': .1481, 'Health Care': .1363, 'Industrials': .1027, 'IT': .2077, 'Materials': .0284, 'Telecoms': .0266, 'Utilities': .0317, 'Real Estate': .0289}}
