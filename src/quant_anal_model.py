@@ -225,6 +225,23 @@ if __name__ == '__main__':
     # plot normalized instrument data
     plot_normalized(data_panel, plot_dir, strat_name = '20_100')
 
+    # print grid of short versus long performance
+    max_l_range = 390
+    for item in data_panel.items:
+        print_file.write("\n\nPeformance of All Short/Long Avg Strategies Applied to %s\n\n" % item)
+        print_file.write("|     |")
+        for s_range in range(10, max_l_range, 15):
+            print_file.write("%s|" % '{:5}'.format(s_range))
+        print_file.write("\n|:----| ")
+        for s_range in range(10, max_l_range, 15):
+            print_file.write(":---:|")
+        for l_range in range(30, max_l_range, 15):
+            print_file.write("\n|%s(bold)|" % '{:5}'.format(l_range))
+            for s_range in range(10, max_l_range, 15):
+                try:
+                    print_file.write("%s|" % '{:^5.3f}'.format(data_panel[item][str(s_range) + '_' + str(l_range)].iloc[-1]))
+                except:
+                    print_file.write(" N/A |")
 
     # # plot indexed instruments on same plot
     # fig = plt.figure()
