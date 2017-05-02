@@ -58,8 +58,6 @@ The chart to the right represents an annual return of 9.09%. Or a 339% return si
 
 Why is this not a million dollar idea --- *over-fitting*. I many combinations of short and long rolling averages to find the one that would perform the best.
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-
 ##### Peformance of All Short/Long Avg Strategies Applied to ^IXIC:
 
 |**L\S**|   10|   25|   40|   55|   70|   85|  100|  115|  130|  145|  160|  175|  190|  205|  220|  235|  250|  265|  280|  295|  310|  325|  340|  355|  370|  385|
