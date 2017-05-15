@@ -23,14 +23,15 @@ def plot_sector_weighting(dc_sec, key, plot_dir):
     plt.savefig(plot_dir + "snp_sector_weighting.png")
     plt.close()
 
-def plot_normalized(data_panel, plot_dir, strat_name = '20_100'):
+def plot_normalized(data_panel, start_date, plot_dir, strat_name = '20_100'):
     # plot normalized price for comparison
     # Normalize data
     for item in data_panel.items:
+        df_temp = data_panel[item].ix[start_date:,:].copy()
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.plot(data_panel[item].index, data_panel[item]['indexed'], label=item+'-indexed')
-        ax.plot(data_panel[item].index, data_panel[item][strat_name], label=item+'-' + strat_name + '_strat')
+        ax.plot(df_temp.index, df_temp['indexed'], label=item+'-indexed')
+        ax.plot(df_temp.index, df_temp[strat_name], label=item+'-' + strat_name + '_strat')
         ax.set_xlabel('Date')
         ax.set_ylabel('Indexed Value')
         ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
@@ -38,23 +39,25 @@ def plot_normalized(data_panel, plot_dir, strat_name = '20_100'):
         plt.xticks(rotation=15)
         plt.savefig(plot_dir + item + '_' + strat_name + '_norm_plot.png')
         plt.close()
+        df_temp = None
 
-def plot_with_averages(data_panel, plot_dir, strat_name = None):
+def plot_with_averages(data_panel, start_date, plot_dir, strat_name = None):
     # create separate plot for each intrument with rolling averages
-    sa_name = 'sa_' + str(short_window) + '_' + str(long_window)
-    la_name = 'la_' + str(short_window) + '_' + str(long_window)
+    sa_name = 'sa_' + str(strat_name)
+    la_name = 'la_' + str(strat_name)
     for item in data_panel.items:
+        df_temp = data_panel[item].ix[start_date:,:].copy()
         fig = plt.figure()
         plt.title ("Instrument to " + str(strat_name) + " Comparison")
         ax = fig.add_subplot(1,1,1)
-        ax.plot(data_panel[item].index, data_panel[item]['inst_price'], label=item)
+        ax.plot(df_temp.index, df_temp['inst_price'], label=item)
         if strat_name != None:
-            init_inst_price = data_panel[item]['inst_price'][data_panel[item].index.min()]
-            ax.plot(data_panel[item].index, \
-                init_inst_price * data_panel[item][strat_name], \
+            init_inst_price = df_temp['inst_price'][df_temp.index.min()]
+            ax.plot(df_temp.index, \
+                init_inst_price * df_temp[strat_name], \
                 label=str(strat_name))
-        ax.plot(data_panel[item].index, data_panel[item][sa_name], label='short avg')
-        ax.plot(data_panel[item].index, data_panel[item][la_name], label='long avg')
+            ax.plot(df_temp.index, df_temp[sa_name], label='short avg')
+            ax.plot(df_temp.index, df_temp[la_name], label='long avg')
         ax.set_xlabel('Date')
         ax.set_ylabel('Adjusted closing price ($)')
         ax.legend(bbox_to_anchor=(0., .99, 1., 1.02),loc=3, \
@@ -62,8 +65,9 @@ def plot_with_averages(data_panel, plot_dir, strat_name = None):
         plt.xticks(rotation=15)
         plt.savefig(plot_dir + item + '_' + str(strat_name) + '_plot.png')
         plt.close()
+        df_temp = None
 
-def create_data_panel(all_panel_data, start_date, end_date, use_price='Adj Close'):
+def create_data_panel(all_panel_data, pull_start_date, start_date, end_date, use_price='Adj Close'):
     # Create dictionary with only time series of data and indexed series.
     # The index is the major axis of the DataFrame
 
@@ -71,7 +75,7 @@ def create_data_panel(all_panel_data, start_date, end_date, use_price='Adj Close
     df_price = all_panel_data.ix['Adj Close']
 
     # Getting all weekdays over Major_axis
-    all_weekdays = pd.date_range(start=start_date, end=end_date, freq='B')
+    all_weekdays = pd.date_range(start=pull_start_date, end=end_date, freq='B')
 
     # Reindex df_price using all_weekdays as the new index
     df_price = df_price.reindex(all_weekdays)
@@ -103,11 +107,12 @@ def create_data_panel(all_panel_data, start_date, end_date, use_price='Adj Close
     for ticker in tickers:
         data_series[ticker] = {'inst_price': df_price.ix[:, ticker]}
     for key in data_series.keys():
-        data_series[key]['indexed'] = data_series[key]['inst_price']/data_series[key]['inst_price'].ix[data_series[key]['inst_price'].index.min()]
+        trading_start_date = data_series[key]['inst_price'].ix[start_date:].index.min()
+        data_series[key]['indexed'] = data_series[key]['inst_price']/data_series[key]['inst_price'].ix[trading_start_date]
 
     return pd.Panel.from_dict(data_series)
 
-def add_performance_column(data_panel, short_window, long_window, allow_short):
+def add_performance_column(data_panel, start_date, short_window, long_window, allow_short):
     sa_name = 'sa_' + str(short_window) + '_' + str(long_window)
     la_name = 'la_' + str(short_window) + '_' + str(long_window)
     for item in data_panel.items:
@@ -142,6 +147,7 @@ def add_performance_column(data_panel, short_window, long_window, allow_short):
         total_pct_gain_arr = long_pct_gain_arr
         if allow_short:
             total_pct_gain_arr += short_pct_gain_arr
+        total_pct_gain_arr = total_pct_gain_arr * (total_pct_gain_arr.index>=start_date).astype(int)
         data_panel[item][str(short_window) + '_' + str(long_window)] = \
             (total_pct_gain_arr + 1.0).cumprod()
 
@@ -156,23 +162,32 @@ if __name__ == '__main__':
 
     # Define the instruments to download. Initially; S&P 500, Dow, and Nasdaq
     tickers = ['^GSPC', '^DJI', '^IXIC']
+    ticker_names = {'^GSPC':'S&P500', '^DJI':'DOW', '^IXIC':'Nasdaq'}
 
     # Define data source
     data_source = 'yahoo'
 
     # Select dates for desired data
-    start_date = '2000-01-01'
-    end_date = dt.date.today().strftime("%Y-%m-%d")
+    start_date = str((raw_input("As of what date would you like the data used to start?[yyyy-mm-dd]") or '2000-01-01'))
+    end_today_y = bool((raw_input("Would you like to run the model on data through the latest available?[y/n]")!='y') or True)
+    if end_today_y:
+        end_date = dt.date.today().strftime("%Y-%m-%d")
+    else:
+        end_date = str(raw_input("What date would you like to run through?[yyyy-mm-dd]"))
+    longest_avg = max(int(raw_input("What is the longest window you would like to iterate through in the comparison test?[days]") or 100),100)
+    longest_avg = -1 * (-1*longest_avg//15) * 15
+    pull_start_date = dt.datetime.strptime(start_date, '%Y-%m-%d') - pd.tseries.offsets.BDay(longest_avg)
+    pull_start_date = pull_start_date.strftime('%Y-%m-%d')
 
     # Create text file for output
-    start_time = str(dt.datetime.now().strftime('%Y-%m-%d_%H:%M'))
-    print_file = open(output_dir + "roll_avg_strat_" + start_time + ".txt", "w")
+    run_time = str(dt.datetime.now().strftime('%Y-%m-%d_%H:%M'))
+    print_file = open(output_dir + "roll_avg_strat_" + run_time + ".txt", "w")
     print_file.write("The data for this analysis was pulled from: %s\n" % (data_source))
     print_file.write("This analysis was run on the the tickers: %s\n" % (tickers))
     print_file.write("This analysis was run over the time range: %s to %s\n" % (start_date, end_date))
 
     # Use pandas_datareader.data.DataReader to load the desired data.
-    all_data_panel = data.DataReader(tickers, data_source, start_date, end_date)
+    all_data_panel = data.DataReader(tickers, data_source, pull_start_date, end_date)
 
     # print all_data_panel
     # print all_data_panel.items
@@ -187,7 +202,7 @@ if __name__ == '__main__':
 
     # Create panel with only time series of data and indexed series.
     # The index is the major axis of the DataFrame
-    data_panel = create_data_panel(all_data_panel, start_date, end_date, use_price='Adj Close')
+    data_panel = create_data_panel(all_data_panel, pull_start_date, start_date, end_date, use_price='Adj Close')
 
     # Calculate the short(20) and long(100) day moving averages of the prices
     short_window = 20
@@ -195,18 +210,19 @@ if __name__ == '__main__':
     allow_short = True
 
     # add performance column to data frame for 20/100 strategy
-    data_panel = add_performance_column(data_panel, short_window, long_window, allow_short)
+    data_panel = add_performance_column(data_panel, start_date, short_window, long_window, allow_short)
 
     # add performance columns for short/long strategy across ranges
     strat_list = []
-    for l_range in range(30, 390, 15):
+    for l_range in range(30, longest_avg + 15, 15):
         for s_range in range(10, l_range, 15):
             strat_list.append(str(s_range) + '_' + str(l_range))
-            data_panel = add_performance_column(data_panel, s_range, l_range, True)
+            data_panel = add_performance_column(data_panel, start_date, s_range, l_range, True)
 
     investment_value = 1.00
 
-    data_panel['^GSPC'].to_csv(data_dir + 'S&P_trade_data.csv')
+    for item in data_panel.items:
+        data_panel[item].to_csv(data_dir + str(ticker_names[item]) + '_trade_data.csv')
     data_panel.to_pickle(data_dir + 'data_panel.pkl')
 
     # print top n and plot top m trading strategies
@@ -216,17 +232,17 @@ if __name__ == '__main__':
         srt_idx = np.argsort(data_panel[item][strat_list].iloc[-1,:])
         print_file.write("\n%s\n%s%s\n%s\n" % (item, '{:11}'.format('Short_Long'), '{:13}'.format('Ending_Value'), data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:n_print]))
         for strat in data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:m_plot].index.tolist():
-            plot_normalized(data_panel, plot_dir, strat)
+            plot_normalized(data_panel, start_date, plot_dir, strat)
 
     # plot each instrument with rolling averages
-    plot_with_averages(data_panel, plot_dir)
-    plot_with_averages(data_panel, plot_dir, strat_name = '20_100')
+    plot_with_averages(data_panel, start_date, plot_dir)
+    plot_with_averages(data_panel, start_date, plot_dir, strat_name = '20_100')
 
     # plot normalized instrument data
-    plot_normalized(data_panel, plot_dir, strat_name = '20_100')
+    plot_normalized(data_panel, start_date, plot_dir, strat_name = '20_100')
 
     # print grid of short versus long performance
-    max_l_range = 390
+    max_l_range = longest_avg
     for item in data_panel.items:
         print_file.write("\n\nPeformance of All Short/Long Avg Strategies Applied to %s\n\n" % item)
         print_file.write("|     |")
@@ -235,7 +251,7 @@ if __name__ == '__main__':
         print_file.write("\n|:----| ")
         for s_range in range(10, max_l_range, 15):
             print_file.write(":---:|")
-        for l_range in range(30, max_l_range, 15):
+        for l_range in range(30, max_l_range + 15, 15):
             print_file.write("\n|%s(bold)|" % '{:5}'.format(l_range))
             for s_range in range(10, max_l_range, 15):
                 try:
