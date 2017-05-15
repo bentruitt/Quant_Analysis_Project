@@ -230,7 +230,12 @@ if __name__ == '__main__':
     m_plot = 5
     for item in data_panel.items:
         srt_idx = np.argsort(data_panel[item][strat_list].iloc[-1,:])
-        print_file.write("\n%s\n%s%s\n%s\n" % (item, '{:11}'.format('Short_Long'), '{:13}'.format('Ending_Value'), data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:n_print]))
+        print_file.write("\n\n%s\n" % item)
+        print_file.write("\n|%s|%s|" % ('{:11}'.format('Short_Long'), '{:13}'.format('Ending_Value')))
+        print_file.write("\n|:---|---:|")
+        print_file.write("\n|%s|%s|" % (ticker_names[item], data_panel[item].indexed.ix[-1]))
+        for line in range(n_print):
+            print_file.write("\n|%s|%s|" % (str(data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:n_print].index[line]),str(data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:n_print].values[line])))
         for strat in data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:m_plot].index.tolist():
             plot_normalized(data_panel, start_date, plot_dir, strat)
 

@@ -52,11 +52,22 @@ I have run the analysis and now have to decide whether, or not, to post this pub
 
 <img align="right" src="/plots/saved_plots/^IXIC_115_120_norm_plot.png" alt="S&P Plot w 115/120" width=70% hspace=30% vspace=2%>
 
-The chart to the right represents an annual return of 9.09%. Or a 339% return since January 1st, 2000 --- $1.00 becomes $4.39. Not bad, but is this a million dollar idea? My guess is "no". It took me not much time to find rolling averages that would perform like this. I can't imagine others have not done the same.
+The chart to the right represents an annual return of 9.09%. Or a 339% return since January 1st, 2000 --- $1.00 becomes $4.39. The top five performing long average / short average strategies and how they performed over the holding period in comparison to the index are below:
+
+|Short_Long |Ending_Value |
+|:---|---:|
+|Nasdaq|1.48172545785|
+|115_120|4.2331156574|
+|130_210|4.04766128707|
+|115_210|3.76740325499|
+|115_225|3.46787428825|
+|145_180|3.44359936136|
+
+ Not bad, but is this a million dollar idea? My guess is "no". It took me not much time to find rolling averages that would perform like this. I can't imagine others have not done the same.
 
 **“There is no such thing as a new idea. It is impossible. We simply take a lot of old ideas and put them into a sort of mental kaleidoscope. We give them a turn and they make new and curious combinations. We keep on turning and making new combinations indefinitely; but they are the same old pieces of colored glass that have been in use through all the ages.” -- Mark Twain**
 
-Why is this not a million dollar idea --- *over-fitting*. I many combinations of short and long rolling averages to find the one that would perform the best.
+Why is this not a million dollar idea --- *over-fitting*. I tested many combinations of short and long rolling averages to find the one that would perform the best. I found the one that best fit the data to maximize return. If you run this same analysis over a different time period, you arrive at significantly different outcomes.
 
 ##### Peformance of All Short/Long Avg Strategies Applied to ^IXIC:
 
