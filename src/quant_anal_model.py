@@ -257,7 +257,7 @@ if __name__ == '__main__':
         for s_range in range(10, max_l_range, 15):
             print_file.write(":---:|")
         for l_range in range(30, max_l_range + 15, 15):
-            print_file.write("\n| **%s** |" % '{:5}'.format(l_range))
+            print_file.write("\n| **%s** |" % str(l_range))
             for s_range in range(10, max_l_range, 15):
                 try:
                     print_file.write("%s|" % '{:^5.3f}'.format(data_panel[item][str(s_range) + '_' + str(l_range)].iloc[-1]))
