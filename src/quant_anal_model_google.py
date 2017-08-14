@@ -67,12 +67,12 @@ def plot_with_averages(data_panel, start_date, plot_dir, strat_name = None):
         plt.close()
         df_temp = None
 
-def create_data_panel(all_panel_data, pull_start_date, start_date, end_date, use_price='Adj Close'):
+def create_data_panel(all_panel_data, pull_start_date, start_date, end_date, use_price='Close'):
     # Create dictionary with only time series of data and indexed series.
     # The index is the major axis of the DataFrame
 
     # The index is the major axis of the DataFrame
-    df_price = all_panel_data.ix['Adj Close']
+    df_price = all_panel_data.ix['Close']
 
     # Getting all weekdays over Major_axis
     all_weekdays = pd.date_range(start=pull_start_date, end=end_date, freq='B')
@@ -104,7 +104,7 @@ def create_data_panel(all_panel_data, pull_start_date, start_date, end_date, use
     '''
     # Get each instrument as a time series and create time series indexed based on earliest date in time series
     data_series = {}
-    for ticker in tickers:
+    for ticker in tickers.keys():
         data_series[ticker] = {'inst_price': df_price.ix[:, ticker]}
     for key in data_series.keys():
         trading_start_date = data_series[key]['inst_price'].ix[start_date:].index.min()
@@ -160,13 +160,15 @@ if __name__ == '__main__':
     data_dir = '../data/'
     output_dir = '../output/'
 
-    # Define the instruments to download. Initially; S&P 500, Dow, and Nasdaq
-    ## yahoo tickers
-    tickers = ['^GSPC', '^DJI', '^IXIC']
-    ticker_names = {'^GSPC':'S&P500', '^DJI':'DOW', '^IXIC':'Nasdaq'}
+    # Define data sources
+    data_source = 'google' # 'yahoo' #
+    snp500_cos_file = 'SnP500_Companies.csv'
+    snp500_cos = pd.read_csv(data_dir + snp500_cos_file)
 
-    # Define data source
-    data_source = 'yahoo' # 'google' # 
+    # Define the instruments to download. Initially; S&P 500, Dow, and Nasdaq
+    ## google tickers
+    tickers = {x:snp500_cos[snp500_cos['Ticker symbol']==x]['Security'].tolist()[0] for x in snp500_cos['Ticker symbol'][:20]}
+
 
     # Select dates for desired data
     start_date = str((raw_input("As of what date would you like the data used to start?[yyyy-mm-dd]") or '2000-01-01'))
@@ -177,33 +179,39 @@ if __name__ == '__main__':
         end_date = str(raw_input("What date would you like to run through?[yyyy-mm-dd]"))
     longest_avg = max(int(raw_input("What is the longest window you would like to iterate through in the comparison test?[days]") or 100),100)
     longest_avg = -1 * (-1*longest_avg//15) * 15
-    pull_start_date = dt.datetime.strptime(start_date, '%Y-%m-%d') - pd.tseries.offsets.BDay(longest_avg)
-    pull_start_date = pull_start_date.strftime('%Y-%m-%d')
+    pull_start_date = (dt.datetime.strptime(start_date, '%Y-%m-%d') - pd.tseries.offsets.BDay(longest_avg)).to_datetime()
+    pull_end_date = dt.datetime.strptime(end_date, '%Y-%m-%d')
+    # pull_start_date = pull_start_date.strftime('%Y-%m-%d')
 
     # Create text file for output
     run_time = str(dt.datetime.now().strftime('%Y-%m-%d_%H:%M'))
     print_file = open(output_dir + "roll_avg_strat_" + run_time + ".txt", "w")
     print_file.write("The data for this analysis was pulled from: %s\n" % (data_source))
-    print_file.write("This analysis was run on the the tickers: %s\n" % (tickers))
+    print_file.write("This analysis was run on the the tickers: %s\n" % (tickers.keys()))
     print_file.write("This analysis was run over the time range: %s to %s\n" % (start_date, end_date))
 
     # Use pandas_datareader.data.DataReader to load the desired data.
-    all_data_panel = data.DataReader(tickers, data_source, pull_start_date, end_date)
+    all_data_panel = data.DataReader(tickers.keys(), data_source, pull_start_date, end_date)
 
     # print all_data_panel
-    # print all_data_panel.items
     '''
     <class 'pandas.core.panel.Panel'>
-    Dimensions: 6 (items) x 4342 (major_axis) x 3 (minor_axis)
-    Items axis: Open to Adj Close
-    Major_axis axis: 2000-01-03 00:00:00 to 2017-04-05 00:00:00
-    Minor_axis axis: ^DJI to ^IXIC
-    Index([u'Open', u'High', u'Low', u'Close', u'Volume', u'Adj Close'], dtype='object')
+    Dimensions: 5 (items) x 2034 (major_axis) x 5 (minor_axis)
+    Items axis: Open to Volume
+    Major_axis axis: 2009-07-17 00:00:00 to 2017-08-14 00:00:00
+    Minor_axis axis: A to ABBV
+    '''
+    # print all_data_panel.items
+    '''
+    Index([u'Open', u'High', u'Low', u'Close', u'Volume'], dtype='object')
     '''
 
     # Create panel with only time series of data and indexed series.
     # The index is the major axis of the DataFrame
-    data_panel = create_data_panel(all_data_panel, pull_start_date, start_date, end_date, use_price='Adj Close')
+    data_panel = create_data_panel(all_data_panel, pull_start_date, start_date, end_date, use_price='Close')
+    df_1st_trade = pd.DataFrame({x:data_panel[x][data_panel[x]['inst_price']<>data_panel[x]['inst_price'][0]].index.min() for x in data_panel.items}.items(), columns=['ticker','first_trade'])
+    ## filter data_panel to only instruments that cover entire trading period
+    data_panel = data_panel[df_1st_trade[df_1st_trade['first_trade']==df_1st_trade['first_trade'].min()]['ticker'].tolist()]
 
     # Calculate the short(20) and long(100) day moving averages of the prices
     short_window = 20
@@ -223,34 +231,34 @@ if __name__ == '__main__':
     investment_value = 1.00
 
     for item in data_panel.items:
-        data_panel[item].to_csv(data_dir + str(ticker_names[item]) + '_trade_data.csv')
+        data_panel[item].to_csv(data_dir + str(item) + '_trade_data.csv')
     data_panel.to_pickle(data_dir + 'data_panel.pkl')
 
     # print top n and plot top m trading strategies
     n_print = 5
-    m_plot = 5
+    m_plot = 1
     for item in data_panel.items:
         srt_idx = np.argsort(data_panel[item][strat_list].iloc[-1,:])
-        print_file.write("\n\n%s\n" % item)
+        print_file.write("\n\n%s (%s)\n" % (tickers[item], item))
         print_file.write("\n|%s|%s|" % ('{:11}'.format('Short_Long'), '{:13}'.format('Ending_Value')))
         print_file.write("\n|:---|---:|")
-        print_file.write("\n|%s|%s|" % (ticker_names[item], data_panel[item].indexed.ix[-1]))
+        print_file.write("\n|%s|%s|" % ("Pure Hold", data_panel[item].indexed.ix[-1]))
         for line in range(n_print):
             print_file.write("\n|%s|%s|" % (str(data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:n_print].index[line]),str(data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:n_print].values[line])))
         for strat in data_panel[item][strat_list].iloc[-1,:][srt_idx][::-1][:m_plot].index.tolist():
             plot_normalized(data_panel, start_date, plot_dir, strat)
 
-    # plot each instrument with rolling averages
-    plot_with_averages(data_panel, start_date, plot_dir)
-    plot_with_averages(data_panel, start_date, plot_dir, strat_name = '20_100')
-
-    # plot normalized instrument data
-    plot_normalized(data_panel, start_date, plot_dir, strat_name = '20_100')
+    # # plot each instrument with rolling averages
+    # plot_with_averages(data_panel, start_date, plot_dir)
+    # plot_with_averages(data_panel, start_date, plot_dir, strat_name = '20_100')
+    #
+    # # plot normalized instrument data
+    # plot_normalized(data_panel, start_date, plot_dir, strat_name = '20_100')
 
     # print grid of short versus long performance
     max_l_range = longest_avg
     for item in data_panel.items:
-        print_file.write("\n\nPeformance of All Short/Long Avg Strategies Applied to %s\n\n" % item)
+        print_file.write("\n\nPeformance of All Short/Long Avg Strategies Applied to %s (%s)\n\n" % (tickers[item], item))
         print_file.write("|     |")
         for s_range in range(10, max_l_range, 15):
             print_file.write("%s|" % '{:5}'.format(s_range))

@@ -161,9 +161,10 @@ if __name__ == '__main__':
     output_dir = '../output/'
 
     # Define the instruments to download. Initially; S&P 500, Dow, and Nasdaq
-    ## yahoo tickers
+    ''' ## yahoo tickers
     tickers = ['^GSPC', '^DJI', '^IXIC']
     ticker_names = {'^GSPC':'S&P500', '^DJI':'DOW', '^IXIC':'Nasdaq'}
+    '''
 
     # Define data source
     data_source = 'yahoo' # 'google' # 
