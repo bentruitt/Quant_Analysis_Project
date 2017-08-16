@@ -1,0 +1,116 @@
+The data for this analysis was pulled from: google
+This analysis was run on the the tickers: ['AGN', 'EOG', 'CPB', 'EVHC', 'IDXX', 'QRVO', 'JWN', 'JBHT', 'TAP', 'VRTX', 'BWA', 'UAL', 'UAA', 'WM', 'SPG', 'FIS', 'GT', 'GIS', 'PYPL', 'WRK', 'ROP', 'GE', 'GD', 'VAR', 'GM', 'NTAP', 'MAS', 'MAR', 'MAT', 'SNA', 'FOXA', 'SNI', 'MAA', 'MAC', 'JNJ', 'XYL', 'TSN', 'SYMC', 'BEN', 'CMI', 'DISCA', 'CMG', 'ALB', 'CME', 'CMA', 'CMS', 'PCG', 'VLO', 'HUM', 'PCLN', 'HCP', 'FTV', 'SNPS', 'K', 'FFIV', 'BLL', 'HCA', 'BLK', 'FTI', 'HCN', 'SIG', 'NFX', 'MA', 'CBG', 'PRGO', 'MO', 'HLT', 'NOC', 'MU', 'CBS', 'NDAQ', 'UHS', 'MS', 'TJX', 'NOV', 'AMGN', 'FB', 'COST', 'FE', 'CTL', 'ADBE', 'FL', 'DOW', 'MSFT', 'GLW', 'SCHW', 'BSX', 'GGP', 'FCX', 'UPS', 'WHR', 'BXP', 'MDT', 'F', 'DFS', 'JEC', 'ILMN', 'V', 'FMC', 'AVY', 'TSCO', 'ALL', 'ALK', 'LMT', 'MMM', 'SO', 'JNPR', 'MMC', 'WEC', 'SWKS', 'DPS', 'IBM', 'BAX', 'CAT', 'CAH', 'BAC', 'GS', 'CAG', 'LB', 'INCY', 'LH', 'PGR', 'HIG', 'CELG', 'WLTW', 'A', 'ABC', 'ZION', 'STI', 'ANTM', 'ABT', 'XOM', 'STX', 'STZ', 'UDR', 'CERN', 'CFG', 'PNR', 'PNW', 'BHF', 'IVZ', 'PNC', 'GOOGL', 'CBOE', 'VFC', 'AMZN', 'AON', 'PRU', 'RE', 'RF', 'AOS', 'RL', 'AYI', 'CHK', 'L', 'HRS', 'HRL', 'MRO', 'MRK', 'HRB', 'IPG', 'NLSN', 'RHT', 'RHI', 'APH', 'ROST', 'APC', 'APA', 'APD', 'KSU', 'SRE', 'KSS', 'WFM', 'WFC', 'IFF', 'CHTR', 'NVDA', 'KORS', 'XRAY', 'AVGO', 'RTN', 'PKG', 'BMY', 'AFL', 'EL', 'PAYX', 'OXY', 'SHW', 'ED', 'DISCK', 'EA', 'ORLY', 'DLR', 'CSX', 'TMK', 'EW', 'EQIX', 'ES', 'STT', 'MGM', 'ALGN', 'LUV', 'WYN', 'LUK', 'ADSK', 'LNT', 'ECL', 'SEE', 'HPE', 'RMD', 'PVH', 'DGX', 'NUE', 'EXPE', 'EXPD', 'UNP', 'ETFC', 'DUK', 'BHGE', 'VTR', 'CLX', 'DTE', 'BBY', 'FRT', 'UNH', 'BBT', 'TRIP', 'INFO', 'KO', 'VMC', 'ARNC', 'KR', 'LNC', 'KEY', 'ITW', 'KLAC', 'SWK', 'RSG', 'WYNN', 'DG', 'DD', 'ANSS', 'AAP', 'WBA', 'XL', 'TGT', 'HBAN', 'BIIB', 'TSS', 'ATVI', 'AKAM', 'DHI', 'HOLX', 'M', 'MLM', 'INTU', 'ALXN', 'SLG', 'DHR', 'SLB', 'AJG', 'MCO', 'JPM', 'MCD', 'NRG', 'PBCT', 'AXP', 'NFLX', 'EXC', 'AAPL', 'SRCL', 'WU', 'EXR', 'WY', 'VNO', 'UNM', 'SPLS', 'AWK', 'HST', 'HSY', 'DLPH', 'FBHS', 'CTSH', 'OMC', 'GPN', 'HAL', 'FITB', 'EQR', 'EQT', 'GPC', 'XLNX', 'HAS', 'PH', 'LVLT', 'GPS', 'YUM', 'SYF', 'PHM', 'SYK', 'XEC', 'KIM', 'SYY', 'AEP', 'AES', 'AET', 'EMN', 'GRMN', 'ESRX', 'AMAT', 'AEE', 'CTAS', 'EMR', 'FDX', 'CRM', 'NWSA', 'PX', 'PG', 'CTXS', 'PM', 'EFX', 'C', 'MHK', 'FOX', 'COTY', 'QCOM', 'XRX', 'ULTA', 'MOS', 'PSA', 'PSX', 'MON', 'MCHP', 'ETR', 'COP', 'DVN', 'KMB', 'DVA', 'KMI', 'GWW', 'FISV', 'COG', 'COF', 'COH', 'PEG', 'ETN', 'COL', 'COO', 'KMX', 'DLTR', 'ZBH', 'AAL', 'ANDV', 'CI', 'DE', 'HES', 'CB', 'CA', 'CF', 'WAT', 'ZTS', 'CHRW', 'TDG', 'SBUX', 'PLD', 'CMCSA', 'MKC', 'PDCO', 'CVX', 'AIZ', 'EIX', 'AIV', 'CVS', 'RCL', 'LOW', 'CHD', 'AIG', 'DIS', 'PPG', 'MNST', 'NSC', 'PPL', 'OKE', 'GOOG', 'IP', 'HPQ', 'IR', 'IT', 'URI', 'IRM', 'MTB', 'UTX', 'JCI', 'MTD', 'PWR', 'CSCO', 'RJF', 'ARE', 'WDC', 'HBI', 'BA', 'BK', 'DRI', 'CCL', 'CCI', 'TIF', 'DRE', 'ALLE', 'FLIR', 'MYL', 'LYB', 'KHC', 'HSIC', 'D', 'NAVI', 'PEP', 'BF.B', 'WMT', 'VZ', 'T', 'WMB', 'VRSN', 'VRSK', 'CINF', 'NTRS', 'CXO', 'FLS', 'FLR', 'REGN', 'HD', 'LKQ', 'LLY', 'ROK', 'INTC', 'BRK.B', 'NWS', 'DOV', 'SCG', 'AME', 'AMD', 'AMG', 'REG', 'BCR', 'LLL', 'NWL', 'AMP', 'TMO', 'AMT', 'LRCX', 'O', 'BDX', 'TRV', 'MPC', 'ABBV', 'MDLZ', 'UA', 'AVB', 'NEM', 'NEE', 'ACN', 'NI', 'TEL', 'RRC', 'FAST', 'NBL', 'HP', 'ADS', 'ADP', 'GILD', 'SJM', 'MCK', 'ADM', 'ADI', 'VIAB', 'LEG', 'XEL', 'LEN', 'EBAY', 'MET', 'USB', 'AZO', 'MSI', 'DISH', 'TWX', 'PCAR', 'TXN', 'DAL', 'CL', 'ORCL', 'TXT', 'PXD', 'HOG', 'ESS', 'PKI', 'CNP', 'HON', 'ICE', 'CSRA', 'CNC', 'TROW', 'ISRG', 'PFE', 'NKE', 'PFG', 'SPGI', 'DXC']
+This analysis was run over the time range: 2010-01-01 to 2017-08-16
+
+
+Noble Energy Inc (NBL)
+
+|Short_Long |Ending_Value |
+|:---|---:|
+|Pure Hold|nan|
+|190_195|1.0|
+|40_105|1.0|
+|70_105|1.0|
+|85_105|1.0|
+|100_105|1.0|
+
+Lockheed Martin Corp. (LMT)
+
+|Short_Long |Ending_Value |
+|:---|---:|
+|Pure Hold|nan|
+|190_195|1.0|
+|40_105|1.0|
+|70_105|1.0|
+|85_105|1.0|
+|100_105|1.0|
+
+JPMorgan Chase & Co. (JPM)
+
+|Short_Long |Ending_Value |
+|:---|---:|
+|Pure Hold|nan|
+|190_195|1.0|
+|40_105|1.0|
+|70_105|1.0|
+|85_105|1.0|
+|100_105|1.0|
+
+Newell Brands (NWL)
+
+|Short_Long |Ending_Value |
+|:---|---:|
+|Pure Hold|nan|
+|190_195|1.0|
+|40_105|1.0|
+|70_105|1.0|
+|85_105|1.0|
+|100_105|1.0|
+
+Peformance of All Short/Long Avg Strategies Applied to Lockheed Martin Corp. (LMT)
+
+|     |   10|   25|   40|   55|   70|   85|  100|  115|  130|  145|  160|  175|  190|
+|:----| :---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **30** |1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **45** |1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **60** |1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **75** |1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **90** |1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **105** |1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A |
+| **120** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A |
+| **135** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A |
+| **150** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A |
+| **165** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A |
+| **180** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A |
+| **195** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|
+
+Peformance of All Short/Long Avg Strategies Applied to JPMorgan Chase & Co. (JPM)
+
+|     |   10|   25|   40|   55|   70|   85|  100|  115|  130|  145|  160|  175|  190|
+|:----| :---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **30** |1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **45** |1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **60** |1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **75** |1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **90** |1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **105** |1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A |
+| **120** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A |
+| **135** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A |
+| **150** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A |
+| **165** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A |
+| **180** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A |
+| **195** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|
+
+Peformance of All Short/Long Avg Strategies Applied to Newell Brands (NWL)
+
+|     |   10|   25|   40|   55|   70|   85|  100|  115|  130|  145|  160|  175|  190|
+|:----| :---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **30** |1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **45** |1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **60** |1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **75** |1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **90** |1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **105** |1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A |
+| **120** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A |
+| **135** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A |
+| **150** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A |
+| **165** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A |
+| **180** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A |
+| **195** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|
+
+Peformance of All Short/Long Avg Strategies Applied to Noble Energy Inc (NBL)
+
+|     |   10|   25|   40|   55|   70|   85|  100|  115|  130|  145|  160|  175|  190|
+|:----| :---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **30** |1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **45** |1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **60** |1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **75** |1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **90** |1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| **105** |1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A | N/A |
+| **120** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A | N/A |
+| **135** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A | N/A |
+| **150** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A | N/A |
+| **165** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A | N/A |
+| **180** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000| N/A |
+| **195** |1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|1.000|

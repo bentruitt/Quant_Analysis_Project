@@ -71,6 +71,14 @@ def create_data_panel(all_panel_data, pull_start_date, start_date, end_date, use
     # Create dictionary with only time series of data and indexed series.
     # The index is the major axis of the DataFrame
 
+    # determine tickers with non nan values
+    good_tickers = [x for x in all_data_panel.ix[0].columns if not np.isnan(all_data_panel.ix['Close'][x][-1])]
+
+    df_1st_trade = pd.DataFrame({x:all_data_panel.ix['Close'][x][np.isnan(all_data_panel.ix['Close'][x])==False].index.min() for x in good_tickers}.items(), columns=['ticker','first_trade'])
+
+    ## filter data_panel to only instruments that cover entire trading period
+    good_tickers = df_1st_trade[df_1st_trade['first_trade']==df_1st_trade['first_trade'].min()]['ticker'].tolist()
+
     # The index is the major axis of the DataFrame
     df_price = all_panel_data.ix['Close']
 
@@ -83,32 +91,13 @@ def create_data_panel(all_panel_data, pull_start_date, start_date, end_date, use
     # Replace nan values with latest available price for each instrument. Nans are inserted for any days the market is not open; such as, holidays.
     df_price = df_price.fillna(method='ffill')
     df_price = df_price.fillna(method='bfill')
-    # print df_price.head(), "\n"
-    # print df_price.describe()
-    '''              ^DJI        ^GSPC        ^IXIC
-    2000-01-03  11357.509766  1455.219971  4131.149902
-    2000-01-04  10997.929688  1399.420044  3901.689941
-    2000-01-05  11122.650391  1402.109985  3877.540039
-    2000-01-06  11253.259766  1403.449951  3727.129883
-    2000-01-07  11522.559570  1441.469971  3882.620117
 
-                ^DJI        ^GSPC        ^IXIC
-    count   4504.000000  4504.000000  4504.000000
-    mean   12339.254736  1390.437817  2854.799351
-    std     3087.472396   377.086953  1160.505333
-    min     6547.049805   676.530029  1114.109985
-    25%    10281.530029  1128.292481  2030.567504
-    50%    11210.409668  1300.740051  2450.354980
-    75%    13786.920166  1520.439972  3627.300110
-    max    21115.550781  2395.959961  5914.339844
-    '''
     # Get each instrument as a time series and create time series indexed based on earliest date in time series
     data_series = {}
-    for ticker in tickers.keys():
+    for ticker in good_tickers:
         data_series[ticker] = {'inst_price': df_price.ix[:, ticker]}
-    for key in data_series.keys():
-        trading_start_date = data_series[key]['inst_price'].ix[start_date:].index.min()
-        data_series[key]['indexed'] = data_series[key]['inst_price']/data_series[key]['inst_price'].ix[trading_start_date]
+        trading_start_date = data_series[ticker]['inst_price'].ix[start_date:].index.min()
+        data_series[ticker]['indexed'] = data_series[ticker]['inst_price']/data_series[ticker]['inst_price'].ix[trading_start_date]
 
     return pd.Panel.from_dict(data_series)
 
@@ -167,8 +156,8 @@ if __name__ == '__main__':
 
     # Define the instruments to download. Initially; S&P 500, Dow, and Nasdaq
     ## google tickers
-    tickers = {x:snp500_cos[snp500_cos['Ticker symbol']==x]['Security'].tolist()[0] for x in snp500_cos['Ticker symbol'][:20]}
-
+    num_of_tickers = 100 # None
+    tickers = {x:snp500_cos[snp500_cos['Ticker symbol']==x]['Security'].tolist()[0] for x in snp500_cos['Ticker symbol'][:num_of_tickers]}
 
     # Select dates for desired data
     start_date = str((raw_input("As of what date would you like the data used to start?[yyyy-mm-dd]") or '2000-01-01'))
@@ -234,10 +223,15 @@ if __name__ == '__main__':
         data_panel[item].to_csv(data_dir + str(item) + '_trade_data.csv')
     data_panel.to_pickle(data_dir + 'data_panel.pkl')
 
-    # print top n and plot top m trading strategies
+    # print top n and plot top m trading strategies for top q performing instruments
     n_print = 5
     m_plot = 1
-    for item in data_panel.items:
+    q_inst = 10 # top q instruments
+    df_max_return = pd.DataFrame.from_dict({item: [float(np.sort(data_panel[item][strat_list].iloc[-1,:])[-1])] for item in data_panel.items}, orient='index')
+    df_max_return.columns = ['max_return']
+    max_srt_idx = np.argsort(df_max_return['max_return'])
+
+    for item in df_max_return.index[max_srt_idx][::-1][:q_inst]:
         srt_idx = np.argsort(data_panel[item][strat_list].iloc[-1,:])
         print_file.write("\n\n%s (%s)\n" % (tickers[item], item))
         print_file.write("\n|%s|%s|" % ('{:11}'.format('Short_Long'), '{:13}'.format('Ending_Value')))

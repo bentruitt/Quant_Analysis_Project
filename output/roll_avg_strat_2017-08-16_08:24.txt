@@ -1,0 +1,3 @@
+The data for this analysis was pulled from: google
+This analysis was run on the the tickers: ['A', 'AEP', 'AES', 'ABC', 'ADBE', 'ADS', 'ADP', 'AGN', 'AET', 'AAL', 'AAPL', 'ACN', 'ABBV', 'ABT', 'AAP', 'AEE', 'ADM', 'AFL', 'ADSK', 'ADI']
+This analysis was run over the time range: 2010-01-01 to 2017-08-16
